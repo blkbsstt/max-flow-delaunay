@@ -1,0 +1,4 @@
+*.pyc
+out.in
+out.dot
+out.pdf
