@@ -1,10 +1,12 @@
 # Max Flow across Delaunay Triangulation
 
+![Example](example.png)
+
 There's an issue with stack depth, so don't throw too many points at it.
 
 ## Usage:
 
-`python2 P2.py inputfile.txt`
+`python2 max-flow-delaunay.py inputfile.txt`
 
 
 ## If graphviz installed, then you can:
@@ -25,7 +27,6 @@ Generates an m x n grid with o additional random points
 
 where n and o are nonnegative integers. 
 Generates an n x n diamond shape with o additional random points
-
 
 ## If running on a Mac or other machine with "open":
 
