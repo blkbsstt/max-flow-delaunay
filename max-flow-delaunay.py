@@ -19,30 +19,37 @@ def dist(a, b):
     return math.sqrt((b.y - a.y)**2 + (b.x - a.x)**2)
 
 def farthest_points(points):
-    pairs = permutations(points, 2)
-    max_pair = pairs.next()
-    max_len = dist(*max_pair)
-    for pair in pairs:
-        length = dist(*pair)
-        if(length > max_len or (length == max_len and slope(*pair) > slope(*max_pair))):
-            max_pair = pair
-            max_len = length
+    return max(permutations(points, 2), key=lambda (a, b): (dist(a, b), slope(a, b)))
+    # pairs = permutations(points, 2)
+    # max_pair = pairs.next()
+    # max_len = dist(*max_pair)
+    # for pair in pairs:
+    #     length = dist(*pair)
+    #     if(length > max_len or (length == max_len and slope(*pair) > slope(*max_pair))):
+    #         max_pair = pair
+    #         max_len = length
+    # return max_pair
 
-    return max_pair
+def dot_edge(edge, flow, maxflow):
+    weight = 1 + 9 * float(flow)/maxflow
+    red = int(flow/edge.c * 255)
+    return '%d -- %d [label="%5.3f/%5.3f", penwidth="%f", color="#%x0000"]\n' % (edge.a.index, edge.b.index, flow, edge.c, weight, red)
 
-def dot_output(network, s, t, filename='out.dot'):
+def dot_point(point, shape="circle"):
+    return '%d [pos="%f,%f!",shape="%s"]\n' % (point.index, point.x, point.y, shape)
+
+def dot_output(network, maxflow, s, t, filename='out.dot'):
     #prints the flow network to a file in dot format
     points = network.vertices()
     with open('out.dot', 'w') as f:
         f.write('graph maxflow {\n')
         for point in points:
-            f.write('%d [pos="%f,%f!"]\n' % (point.index, point.x, point.y))
+            f.write(dot_point(point))
         for point in [s, t]:
-            f.write('%d [pos="%f,%f!",shape="doublecircle"]\n' % (point.index, point.x, point.y))
-        edges = [edge for edge in network.edges() if edge.a.index < edge.b.index]
+            f.write(dot_point(point, "doublecircle"))
+        edges = (edge for edge in network.edges() if edge.a.index < edge.b.index)
         for edge in edges:
-            f.write('%d -- %d [label="%5.3f/%5.3f"]\n' % (edge.a.index, edge.b.index, abs(network.flow[edge]), edge.c))
-            #f.write('%d -- %d\n' % (edge.a.index, edge.b.index))
+            f.write(dot_edge(edge, abs(network.flow[edge]), maxflow))
         f.write('}\n')
 
 def console_output(network, maxflow, s, t):
@@ -76,7 +83,7 @@ def main():
     flow = network.max_flow(s, t)
 
     console_output(network, flow, s, t)
-    dot_output(network, s, t)
+    dot_output(network, flow, s, t)
 
 if __name__ == '__main__':
     main()

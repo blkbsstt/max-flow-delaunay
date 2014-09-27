@@ -6,7 +6,7 @@ There's an issue with stack depth, so don't throw too many points at it.
 
 ## Usage:
 
-`python2 max-flow-delaunay.py inputfile.txt`
+`python max-flow-delaunay.py inputfile.txt`
 
 
 ## If graphviz installed, then you can:
@@ -18,12 +18,12 @@ to generate a pdf of the solution
 
 ## Helpful scripts to generate points:
 
-`python2 randgrid.py m n o > out.txt`
+`python randgrid.py m n o > out.txt`
 
 where m, n, and o are nonnegative integers. 
 Generates an m x n grid with o additional random points
 
-`python2 randdiamond.py n o > out.txt`
+`python randdiamond.py n o > out.txt`
 
 where n and o are nonnegative integers. 
 Generates an n x n diamond shape with o additional random points
