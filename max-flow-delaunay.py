@@ -1,6 +1,6 @@
 import sys
 from collections import namedtuple
-from itertools import permutations, combinations, chain
+from itertools import permutations, combinations
 from flow import FlowNetwork
 import delaunay
 import math
@@ -10,30 +10,21 @@ Point = namedtuple('Point', 'x y index')
 Infinity = float("inf")
 
 def slope(a, b):
-    if b.x - a.x == 0:
-        return Infinity
-    else:
-        return (b.y - a.y) / (b.x - a.x)
+    return (b.y - a.y) / (b.x - a.x) if b.x - a.x != 0 else Infinity
 
 def dist(a, b):
     return math.sqrt((b.y - a.y)**2 + (b.x - a.x)**2)
 
 def farthest_points(points):
     return max(permutations(points, 2), key=lambda (a, b): (dist(a, b), slope(a, b)))
-    # pairs = permutations(points, 2)
-    # max_pair = pairs.next()
-    # max_len = dist(*max_pair)
-    # for pair in pairs:
-    #     length = dist(*pair)
-    #     if(length > max_len or (length == max_len and slope(*pair) > slope(*max_pair))):
-    #         max_pair = pair
-    #         max_len = length
-    # return max_pair
 
 def dot_edge(edge, flow, maxflow):
+    label = "%5.3f/%5.3f" % (flow, edge.c)
     weight = 1 + 9 * float(flow)/maxflow
-    red = int(flow/edge.c * 255)
-    return '%d -- %d [label="%5.3f/%5.3f", penwidth="%f", color="#%x0000"]\n' % (edge.a.index, edge.b.index, flow, edge.c, weight, red)
+    opacity = 220 - int(flow/edge.c * 220)
+    color = "#%02x%02x%02x" % ((opacity,) * 3)
+    a, b = edge.a.index, edge.b.index
+    return '%d -- %d [label="%s", penwidth="%f", color="%s"]\n' % (a, b, label, weight, color)
 
 def dot_point(point, shape="circle"):
     return '%d [pos="%f,%f!",shape="%s"]\n' % (point.index, point.x, point.y, shape)
